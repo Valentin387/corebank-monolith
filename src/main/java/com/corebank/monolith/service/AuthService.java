@@ -1,5 +1,6 @@
 package com.corebank.monolith.service;
 
+import com.corebank.monolith.controller.AuthController;
 import org.springframework.stereotype.Service;
 
 @Service
