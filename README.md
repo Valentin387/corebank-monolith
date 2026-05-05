@@ -132,53 +132,69 @@ Requests enter through Spring MVC controllers. A security filter validates JWT a
 
 ---
 
-### 7. Configuration
+### 7. How to Run the Project (Local Development)
 
-**`src/main/resources/application.yml`**
+From the project root directory, run:
 
-```yaml
-spring:
-  application:
-    name: corebank-monolith
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/corebank
-    username: postgres
-    password: postgres
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-  data:
-    redis:
-      host: localhost
-      port: 6379
-
-jwt:
-  secret: ${JWT_SECRET:super-secret-key-for-development-only}
-  expiration: 3600000
-
-server:
-  port: 8080
-
-logging:
-  level:
-    root: INFO
-    com.corebank.monolith: DEBUG
-    org.hibernate.SQL: DEBUG
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
+```bash
+docker compose up -d
 ```
 
+This starts:
+- **PostgreSQL** on `localhost:5432`  
+  Database: `corebank`  
+  User: `postgres`  
+  Password: `password`
+- **Redis** on `localhost:6379`
+
+#### 7.1. Build the Application
+
+```bash
+./gradlew clean build
+```
+
+#### 7.2. Run the Spring Boot Application
+
+**Option A – Recommended (Development mode)**
+
+```bash
+./gradlew bootRun
+```
+
+**Option B – Using executable JAR**
+
+```bash
+java -jar build/libs/corebank-monolith-0.0.1-SNAPSHOT.jar
+```
+
+The application will be available at **http://localhost:8080**.
+
+---
+
+#### 7.3. How to Stop the Project
+
+```bash
+# 1. Stop the Spring Boot application
+#    → Press Ctrl+C if running with ./gradlew bootRun
+
+# 2. Stop Docker infrastructure
+docker compose down
+```
+
+**Optional – Full reset (removes all data)**
+
+```bash
+docker compose down -v
+```
+
+**Quick verification after startup**
+
+```bash
+# Health check
+curl http://localhost:8080/actuator/health
+
+# Or open in browser: http://localhost:8080/actuator/health
+```
 ---
 
 ### 8. Security
