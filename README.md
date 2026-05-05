@@ -258,6 +258,89 @@ curl http://localhost:8080/actuator/health
 
 ---
 
+### 15. How to Test the Endpoints with Insomnia (or any HTTP Client)
+
+### Prerequisites
+- Docker services running: `docker compose up -d`
+- Application running: `./gradlew bootRun`
+- Base URL: `http://localhost:8080`
+
+---
+
+### Recommended Insomnia Setup
+
+1. Create a new **Collection**: `CoreBank Monolith - Phase 1`
+2. Create an **Environment** named `Local` with these variables:
+
+   ```json
+   {
+     "baseUrl": "http://localhost:8080",
+     "custIdentNum": "123456789",
+     "custIdentType": "CC"
+   }
+   ```
+
+---
+
+##### 1. Login (Get JWT Token)
+
+**Request Name**: `1. POST Login`
+
+- **Method**: `POST`
+- **URL**: `{{ baseUrl }}/api/auth/login`
+- **Headers**:
+    - `Content-Type`: `application/json`
+    - `X-CustIdentNum`: `{{ custIdentNum }}`
+    - `X-CustIdentType`: `{{ custIdentType }}`
+- **Body** (JSON):
+  ```json
+  {
+    "username": "user",
+    "password": "password"
+  }
+  ```
+
+**Expected**: `200 OK` with `ResponseDTO` containing JWT in `body`.
+
+> **Tip**: Right-click the token in the response → **Store Response** → Save as variable named `authToken`
+
+---
+
+##### 2. Get Aggregated Balance (Protected Endpoint)
+
+**Request Name**: `2. GET Home Balance`
+
+- **Method**: `GET`
+- **URL**: `{{ baseUrl }}/api/home/balance`
+- **Headers**:
+    - `Authorization`: `Bearer {{ authToken }}`
+    - `X-CustIdentNum`: `{{ custIdentNum }}`
+    - `X-CustIdentType`: `{{ custIdentType }}`
+
+**Expected**: `200 OK` with `ResponseDTO` containing account data.
+
+---
+
+##### Quick Verification (Terminal)
+
+```bash
+# Health check
+curl http://localhost:8080/actuator/health
+
+# Login
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -H "X-CustIdentNum: 123456789" \
+  -H "X-CustIdentType: CC" \
+  -d '{"username":"user","password":"password"}'
+```
+
+---
+
+**All responses follow the standard `ResponseDTO` contract** used in production banking systems.
+
+---
+
 **End of Phase 1 ERD**
 
 This document is the official baseline for the **CoreBank Modernization Journey**.
