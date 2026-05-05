@@ -8,6 +8,8 @@ import org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfigur
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -17,13 +19,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.corebank.monolith.security.JwtFilter;   // ← Added for exclusion
+
 @WebMvcTest(value = HomeController.class,
         excludeAutoConfiguration = {
                 DataSourceAutoConfiguration.class,
                 HibernateJpaAutoConfiguration.class,
                 DataRedisAutoConfiguration.class
-        })
-@AutoConfigureMockMvc(addFilters = false)   // ← Prevents JwtFilter from loading in test slice
+        },
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = JwtFilter.class
+        ))
+@AutoConfigureMockMvc(addFilters = false)
 class HomeControllerTest {
 
     @Autowired

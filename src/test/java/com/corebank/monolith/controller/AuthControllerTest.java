@@ -3,11 +3,13 @@ package com.corebank.monolith.controller;
 import com.corebank.monolith.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
 import org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;   // ← Spring Boot 4.0.6
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,13 +21,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.corebank.monolith.security.JwtFilter;   // ← Added for exclusion
+
 @WebMvcTest(value = AuthController.class,
         excludeAutoConfiguration = {
                 DataSourceAutoConfiguration.class,
                 HibernateJpaAutoConfiguration.class,
                 DataRedisAutoConfiguration.class
-        })
-@AutoConfigureMockMvc(addFilters = false)   // ← Prevents JwtFilter from loading in test slice
+        },
+        excludeFilters = @ComponentScan.Filter(          // ← Prevents JwtFilter bean creation
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = JwtFilter.class
+        ))
+@AutoConfigureMockMvc(addFilters = false)   // ← Keeps MockMvc clean
 class AuthControllerTest {
 
     @Autowired
