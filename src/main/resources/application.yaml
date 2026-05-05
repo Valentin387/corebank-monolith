@@ -1,19 +1,29 @@
+server:
+  port: 8080
+
 spring:
   application:
-    name: monolith
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+    name: corebank-monolith
   datasource:
     url: jdbc:postgresql://localhost:5432/corebank
     username: postgres
     password: password
     driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
   redis:
     host: localhost
     port: 6379
-    password: ""
+  h2:
+    console:
+      enabled: true
+
+jwt:
+  secret: super-secret-for-demo-only-change-in-prod
+  expiration: 3600000   # 1 hour
+
+logging:
+  level:
+    org.springframework: INFO

@@ -1,24 +1,24 @@
 package com.corebank.monolith.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-
+import com.corebank.monolith.model.ResponseDTO;
 import com.corebank.monolith.service.HomeService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/home")
 public class HomeController {
 
-    @Autowired
-    private HomeService homeService;
+    private final HomeService homeService;
+
+    public HomeController(HomeService homeService) {
+        this.homeService = homeService;
+    }
 
     @GetMapping("/balance")
-    public ResponseEntity<String> getBalance(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResponseDTO<String>> getBalance(@RequestHeader("Authorization") String token) {
         String balanceData = homeService.getAggregatedBalance(token);
-        return ResponseEntity.ok(balanceData);
+        ResponseDTO<String> response = ResponseDTO.success(balanceData);
+        return ResponseEntity.ok(response);
     }
 }
