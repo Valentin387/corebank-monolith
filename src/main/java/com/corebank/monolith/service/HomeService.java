@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 public class HomeService {
 
     public String getAggregatedBalance(String token) {
-        // Placeholder logic for retrieving aggregated balance data
         return "{\"accounts\": [{\"id\": 1, \"balance\": 1000.0}] }";
     }
 }

@@ -8,6 +8,5 @@ class MonolithApplicationTests {
 
     @Test
     void contextLoads() {
-        // Validates full Spring context (including security config, filters, Redis/JPA stubs)
     }
 }

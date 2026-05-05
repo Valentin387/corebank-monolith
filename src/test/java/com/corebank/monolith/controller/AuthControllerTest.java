@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.corebank.monolith.security.JwtFilter;   // ← Added for exclusion
+import com.corebank.monolith.security.JwtFilter;
 
 @WebMvcTest(value = AuthController.class,
         excludeAutoConfiguration = {
@@ -29,11 +29,11 @@ import com.corebank.monolith.security.JwtFilter;   // ← Added for exclusion
                 HibernateJpaAutoConfiguration.class,
                 DataRedisAutoConfiguration.class
         },
-        excludeFilters = @ComponentScan.Filter(          // ← Prevents JwtFilter bean creation
+        excludeFilters = @ComponentScan.Filter(
                 type = FilterType.ASSIGNABLE_TYPE,
                 classes = JwtFilter.class
         ))
-@AutoConfigureMockMvc(addFilters = false)   // ← Keeps MockMvc clean
+@AutoConfigureMockMvc(addFilters = false)
 class AuthControllerTest {
 
     @Autowired
