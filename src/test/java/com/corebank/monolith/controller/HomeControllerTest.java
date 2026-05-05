@@ -3,8 +3,12 @@ package com.corebank.monolith.controller;
 import com.corebank.monolith.service.HomeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;           // ← SB 4.0.6 correct import
-import org.springframework.test.context.bean.override.mockito.MockitoBean;   // ← SB 4.0.6 replacement for @MockBean
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
+import org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -13,13 +17,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(HomeController.class)
+@WebMvcTest(value = HomeController.class,
+        excludeAutoConfiguration = {
+                DataSourceAutoConfiguration.class,
+                HibernateJpaAutoConfiguration.class,
+                DataRedisAutoConfiguration.class
+        })
+@AutoConfigureMockMvc(addFilters = false)   // ← Prevents JwtFilter from loading in test slice
 class HomeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean   // ← Spring Boot 4.0.6 correct annotation
+    @MockitoBean
     private HomeService homeService;
 
     @Test
