@@ -26,7 +26,7 @@ It implements two core banking domains in one tightly coupled application:
 **Key Characteristics**
 - Classic layered architecture with intentional anti-patterns
 - Synchronous blocking operations (Spring MVC)
-- Custom Davivienda-style banking headers
+- Custom banking headers
 - Standardized `ResponseDTO` wrapper
 - Minimum **80%** test coverage (JaCoCo)
 - Current tooling (Spring Boot 4.0.6 + Java 21 + Gradle Kotlin DSL)
